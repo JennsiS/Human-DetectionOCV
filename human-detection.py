@@ -1,9 +1,14 @@
+## Author: Jennifer Sandocal
+## References: 
+## https://docs.opencv.org/3.4/d5/d33/structcv_1_1HOGDescriptor.html
+## https://thedatafrog.com/en/articles/human-detection-video/
+
 import numpy as np
 import cv2
 
 # initialize the HOG descriptor/person detector
 hog = cv2.HOGDescriptor()
-# calls the pre-trained model for Human detection of OpenCV and then we will feed our support vector machine with it.
+# Calls the pre-trained model for Human detection of OpenCV and then we will feed our support vector machine with it.
 hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
 
 cv2.startWindowThread()
@@ -32,14 +37,15 @@ while(True):
     boxes, weights = hog.detectMultiScale(frame, winStride=(8,8) )
 
     print('Human Detected : ', len(boxes))
-
+    
+    # Recreate boxes with the given coordenates
     boxes = np.array([[x, y, x + w, y + h] for (x, y, w, h) in boxes])
 
     box = 0
     for (xA, yA, xB, yB) in boxes:
         # display the detected boxes in the colour picture
         cv2.rectangle(frame, (xA, yA), (xB, yB), (0, 255, 0), 2)
-        cv2.putText(frame, f'person {weights[box]}', (xA,yA), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,255), 1)
+        cv2.putText(frame, f'Person { round(weights[box] *100, 0)}%', (xA,yA), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,255), 1)
         box += 1
     
     # Write the output video 
